@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>Calcular Impostos</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="stylesheet" href="css/style.css" />
+	<!-- js da mascara de moeda -->
+	<script type="text/javascript" src="js/jquery.js"></script>
+	<script type="text/javascript" src="js/jquery.maskMoney.js"></script>
+	<!-- js dos calculos -->
+	<script type="text/javascript" src="js/calculos.js"></script>
+	<!-- js que chama os outros  -->
+	<script language="javascript">
+	$(document).ready(function(){
+		$("input.dinheiro").maskMoney({prefix:'R$ ', allowNegative: false, thousands:'.', decimal:',', affixesStay: true});
+	});
+		
+	function fCalcular(){  	
+	
+		var sal = $('#salario').maskMoney('unmasked')[0];
+		if(sal<1){
+			$('input[name=campoSalario]').focus();
+			document.getElementById("errorMsg").innerHTML="<font color=red>*Valor Invalido!</font>";
+		}else{
+			document.getElementById("errorMsg").innerHTML="";
+			document.getElementById("salBruto").innerHTML="R$ "+sal.toFixed(2);
+			var inss = calcInss(sal);
+			document.getElementById("descInss").innerHTML="R$ "+inss.toFixed(2);
+			sal=sal-inss;
+			var ir = calcImpostoRenda (sal);
+			document.getElementById("descIr").innerHTML="R$ "+ir.toFixed(2);
+			sal=sal-ir;
+			var totalD =inss+ir;		
+			document.getElementById("totalDesc").innerHTML="R$ "+totalD.toFixed(2);
+			document.getElementById("liquido").innerHTML="R$ "+sal.toFixed(2);
+		}		
+	}	
+	</script>
+</head>
+<body>
+	<div id="content">
+	
+	    <fieldset>
+		
+			<legend>Cálculo Salário Líquido</legend>			
+			<input type="numeric"  id="salario" name="campoSalario" class="dinheiro" placeholder="Digite seu salário" maxlength="17" />
+            </br>
+			<!-- js da mascara de moeda -->
+			<label id="errorMsg"></label>
+			<input type="button" id="botao" onclick="fCalcular();" value="Calcular">
+			</br>
+			<hr width="100%" size="1" >
+			<h2>Resultado</h2>
+           
+			<!-- Tabela com resultados -->
+			<table cellspacing=0 cellpadding=4 >			
+				<tr class="titulo">		
+					<td><h4>Item</h4></td>
+					<td class="refDesc"><h4>Referencia</h4></td>
+					<td class="refDesc"><h4>Descontos</h4></td>			
+				</tr>			
+				<tr>			
+					<td>INSS</td>			
+					<td id="refInss" class="refDesc">-</td>
+					<td id="descInss" class="refDesc">-</td>
+				</tr>	
+				<tr>			
+					<td>IRRF</td>			
+					<td id="refIr" class="refDesc">'-'</td>
+					<td id="descIr" class="refDesc">-</td>
+				</tr>			
+				<tr>			
+					<td colspan="2" >Total</td>			
+						
+					<td id="totalDesc" class="refDesc">-</td>
+				</tr>
+					
+				<tr>		
+					<td>Salário Bruto</td>			
+					<td id="salBruto" class="refDesc" colspan="2">-</td>
+								
+				</tr>	
+				<tr class="resultado">			
+					<td colspan="2">Sálario Líquido</td>						
+					<td id="liquido" class="refDesc" >-</td>			
+				</tr>
+			</table>							
+		</fieldset>
+	</div>
+	<!-- js que faz a transição do background -->
+    <script type="text/javascript" src="js/slideshow.js"></script>
+</body>
+</html> 
